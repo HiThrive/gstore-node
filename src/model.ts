@@ -3,8 +3,7 @@ import arrify from 'arrify';
 import extend from 'extend';
 import hooks from 'promised-hooks';
 import dsAdapterFactory from 'nsql-cache-datastore';
-import get from 'lodash.get';
-import set from 'lodash.set';
+import { get, set } from 'lodash-es';
 
 import { Transaction } from '@google-cloud/datastore';
 
@@ -287,7 +286,7 @@ export const generateModel = <T extends object, M extends object>(
   schema: Schema<T, M>,
   gstore: Gstore,
 ): Model<T, M> => {
-  const model: Model<T, M> = class GstoreModel extends GstoreEntity<T> {
+  const model = class GstoreModel extends GstoreEntity<T> {
     static gstore: Gstore = gstore;
 
     static schema: Schema<T> = schema;
@@ -357,7 +356,7 @@ export const generateModel = <T extends object, M extends object>(
       namespace?: string,
       transaction?: Transaction,
       options: GetOptions = {},
-    ): PromiseWithPopulate<U extends Array<string | number> ? GstoreEntity<T>[] : GstoreEntity<T>> {
+    ): PromiseWithPopulate<U extends Array<string | number> ? Entity<T, M>[] : Entity<T, M>> {
       const ids = arrify(id);
 
       const key = this.key(ids, ancestors, namespace);
@@ -366,7 +365,7 @@ export const generateModel = <T extends object, M extends object>(
 
       const onEntity = (
         entityDataFetched: EntityData<T> | EntityData<T>[],
-      ): GstoreEntity<T> | null | Array<GstoreEntity<T> | null> => {
+      ): Entity<T, M> | null | Array<Entity<T, M> | null> => {
         const entityData = arrify(entityDataFetched);
 
         if (
@@ -388,30 +387,29 @@ export const generateModel = <T extends object, M extends object>(
           if (typeof data === 'undefined' || data === null) {
             return null;
           }
-          return new this(data, undefined, undefined, undefined, (data as any)[this.gstore.ds.KEY]);
+          return new this(data, undefined, undefined, undefined, (data as any)[this.gstore.ds.KEY]) as Entity<T, M>;
         });
 
         // TODO: Check if this is still useful??
         if (Array.isArray(id) && options.preserveOrder && entity.every((e) => typeof e !== 'undefined' && e !== null)) {
-          (entity as GstoreEntity<T>[]).sort((a, b) => id.indexOf(a.entityKey.id) - id.indexOf(b.entityKey.id));
+          (entity as Entity<T, M>[]).sort((a, b) => {
+            const aId = a.entityKey.id;
+            const bId = b.entityKey.id;
+            if (aId === undefined || bId === undefined) return 0;
+            return id.indexOf(aId) - id.indexOf(bId);
+          });
         }
 
-        return Array.isArray(id) ? (entity as GstoreEntity<T>[]) : entity[0];
+        return Array.isArray(id) ? (entity as Entity<T, M>[]) : entity[0];
       };
 
-      /**
-       * If gstore has been initialize with a cache we first fetch
-       * the key(s) from it.
-       * gstore-cache underneath will call the "fetchHandler" with only the keys that haven't
-       * been found. The final response is the merge of the cache result + the fetch.
-       */
       const promise = this.__fetchEntityByKey(key, transaction, dataloader, options)
         .then(onEntity)
         .then(this.__populate(refsToPopulate, { ...options, transaction }));
 
       (promise as any).populate = populateFactory(refsToPopulate, promise, this.schema);
 
-      return promise as PromiseWithPopulate<U extends Array<string | number> ? GstoreEntity<T>[] : GstoreEntity<T>>;
+      return promise as PromiseWithPopulate<U extends Array<string | number> ? Entity<T, M>[] : Entity<T, M>>;
     }
 
     static update(
@@ -421,10 +419,10 @@ export const generateModel = <T extends object, M extends object>(
       namespace?: string,
       transaction?: Transaction,
       options?: GenericObject,
-    ): Promise<GstoreEntity<T>> {
+    ): Promise<Entity<T, M>> {
       this.__hooksEnabled = true;
 
-      let entityDataUpdated: GstoreEntity<T>;
+      let entityDataUpdated: Entity<T, M>;
       let internalTransaction = false;
 
       const key = this.key(id, ancestors, namespace);
@@ -447,9 +445,9 @@ export const generateModel = <T extends object, M extends object>(
         });
       };
 
-      const saveEntity = (datastoreFormat: { key: EntityKey; data: EntityData<T> }): Promise<GstoreEntity<T>> => {
+      const saveEntity = (datastoreFormat: { key: EntityKey; data: EntityData<T> }): Promise<Entity<T, M>> => {
         const { key: entityKey, data: entityData } = datastoreFormat;
-        const entity = new this(entityData, undefined, undefined, undefined, entityKey);
+        const entity = new this(entityData, undefined, undefined, undefined, entityKey) as Entity<T, M>;
 
         /**
          * If a DataLoader instance is passed in the options
@@ -459,10 +457,10 @@ export const generateModel = <T extends object, M extends object>(
           entity.dataloader = options.dataloader;
         }
 
-        return entity.save(transaction);
+        return entity.save(transaction).then(result => result as Entity<T, M>);
       };
 
-      const onTransactionSuccess = (): Promise<GstoreEntity<T>> => {
+      const onTransactionSuccess = (): Promise<Entity<T, M>> => {
         /**
          * Make sure to delete the cache for this key
          */
@@ -483,7 +481,7 @@ export const generateModel = <T extends object, M extends object>(
         return Promise.resolve(entityDataUpdated);
       };
 
-      const onEntityUpdated = (entity: GstoreEntity<T>): Promise<GstoreEntity<T>> => {
+      const onEntityUpdated = (entity: Entity<T, M>): Promise<Entity<T, M>> => {
         entityDataUpdated = entity;
 
         if (options && options.dataloader) {
@@ -508,7 +506,7 @@ export const generateModel = <T extends object, M extends object>(
         return onTransactionSuccess();
       };
 
-      const getAndUpdate = (): Promise<GstoreEntity<T>> => getEntity().then(saveEntity).then(onEntityUpdated);
+      const getAndUpdate = (): Promise<Entity<T, M>> => getEntity().then(saveEntity).then(onEntityUpdated);
 
       const onUpdateError = (err: Error | Error[]): Promise<any> => {
         const error = Array.isArray(err) ? err[0] : err;
@@ -1092,21 +1090,15 @@ export const generateModel = <T extends object, M extends object>(
     static list: any; // Is added below from the Query instance
 
     static findAround: any; // Is added below from the Query instance
-  } as Model<T, M> & T;
+  } as unknown as Model<T, M>;
 
   const query = new Query<T, M>(model);
   const { initQuery, list, findOne, findAround } = query;
 
-  model.query = initQuery.bind(query); // eslint-disable-line @typescript-eslint/unbound-method
+  model.query = initQuery.bind(query);
   model.list = list.bind(query);
   model.findOne = findOne.bind(query);
   model.findAround = findAround.bind(query);
-
-  // TODO: Refactor how the Model/Entity relationship
-  // Attach props to prototype
-  model.prototype.__gstore = gstore;
-  model.prototype.__schema = schema;
-  model.prototype.__entityKind = kind;
 
   // Wrap the Model to add "pre" and "post" hooks functionalities
   hooks.wrap(model);

@@ -132,7 +132,7 @@ export interface SchemaPathDefinition {
     joi?: any;
     ref?: string;
 }
-export declare type JoiConfig = {
+export type JoiConfig = {
     extra?: GenericObject;
     options?: GenericObject;
 };
@@ -147,9 +147,9 @@ export interface SchemaOptions {
     };
     joi?: boolean | JoiConfig;
 }
-export declare type Validator = string | {
+export type Validator = string | {
     rule: string | ((...args: any[]) => boolean);
     args?: any[];
 };
-export declare type PropType = NumberConstructor | StringConstructor | ObjectConstructor | ArrayConstructor | BooleanConstructor | DateConstructor | typeof Buffer | 'double' | 'geoPoint' | 'entityKey';
+export type PropType = NumberConstructor | StringConstructor | ObjectConstructor | ArrayConstructor | BooleanConstructor | DateConstructor | typeof Buffer | 'double' | 'geoPoint' | 'entityKey';
 export default Schema;

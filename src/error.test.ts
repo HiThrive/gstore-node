@@ -24,7 +24,7 @@ describe('GstoreError', () => {
   test('should create a custom Error', () => {
     try {
       doSomethingBad();
-    } catch (e) {
+    } catch (e: any) {
       expect(e.name).equal('GstoreError');
       expect(e instanceof GstoreError);
       expect(e instanceof Error);
@@ -52,7 +52,7 @@ describe('GstoreError', () => {
 
     try {
       func();
-    } catch (e) {
+    } catch (e: any) {
       expect(e.code).equal('ERR_GENERIC');
       expect(e.toString()).equal('GstoreError: An error occured');
     }
@@ -68,7 +68,7 @@ describe('TypeError', () => {
 
     try {
       throwTypeError();
-    } catch (e) {
+    } catch (e: any) {
       expect(e.name).equal('TypeError');
       expect(e instanceof TypeError);
       expect(e instanceof GstoreError);

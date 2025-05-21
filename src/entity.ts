@@ -240,7 +240,7 @@ export class GstoreEntity<T extends object = GenericObject> {
       showKey,
     });
 
-    return data;
+    return data as Partial<EntityData<T>> & { [key: string]: any };
   }
 
   get<P extends keyof T>(path: P): any {

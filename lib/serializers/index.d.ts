@@ -1,6 +1,6 @@
 export declare const datastoreSerializer: {
     toDatastore: <T extends object>(entity: import("../entity").GstoreEntity<T>, options?: {
-        method?: "insert" | "update" | "upsert" | undefined;
+        method?: import("../types").DatastoreSaveMethod | undefined;
     } | undefined) => {
         key: import("@google-cloud/datastore/build/src/entity").entity.Key;
         data: import("..").EntityData<{
@@ -8,7 +8,7 @@ export declare const datastoreSerializer: {
         }>;
         excludeLargeProperties?: boolean | undefined;
         excludeFromIndexes?: string[] | undefined;
-        method?: "insert" | "update" | "upsert" | undefined;
+        method?: import("../types").DatastoreSaveMethod | undefined;
     };
     fromDatastore: <F extends "JSON" | "ENTITY" = "JSON", R = F extends "ENTITY" ? import("../entity").GstoreEntity<import("../types").GenericObject> : import("..").EntityData<{
         [key: string]: any;
@@ -28,7 +28,7 @@ export declare const datastoreSerializer: {
         }>;
         excludeLargeProperties?: boolean | undefined;
         excludeFromIndexes?: string[] | undefined;
-        method?: "insert" | "update" | "upsert" | undefined;
+        method?: import("../types").DatastoreSaveMethod | undefined;
     } : {
         key: import("@google-cloud/datastore/build/src/entity").entity.Key;
         data: import("..").EntityData<{
@@ -36,8 +36,8 @@ export declare const datastoreSerializer: {
         }>;
         excludeLargeProperties?: boolean | undefined;
         excludeFromIndexes?: string[] | undefined;
-        method?: "insert" | "update" | "upsert" | undefined;
+        method?: import("../types").DatastoreSaveMethod | undefined;
     }[]>(entities: T_1, options?: {
-        method?: "insert" | "update" | "upsert" | undefined;
+        method?: import("../types").DatastoreSaveMethod | undefined;
     } | undefined) => R_1;
 };

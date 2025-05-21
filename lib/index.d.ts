@@ -86,10 +86,12 @@ export declare class Gstore {
     save(entities: GstoreEntity | GstoreEntity[], transaction?: Transaction, options?: {
         method?: DatastoreSaveMethod;
         validate?: boolean;
-    } | undefined): Promise<[{
-        mutationResults?: any;
-        indexUpdates?: number | null;
-    }] | void>;
+    } | undefined): Promise<[
+        {
+            mutationResults?: any;
+            indexUpdates?: number | null;
+        }
+    ] | void>;
     /**
      * Connect gstore node to the Datastore instance
      *
@@ -130,11 +132,11 @@ export declare const instances: {
      */
     set(id: string, instance: Gstore): void;
 };
-export declare type Entity<T extends object = GenericObject> = EntityType<T>;
-export declare type Model<T extends object = GenericObject, M extends object = {
+export type Entity<T extends object = GenericObject> = EntityType<T>;
+export type Model<T extends object = GenericObject, M extends object = {
     [key: string]: CustomEntityFunction<T>;
 }> = GstoreModel<T, M>;
-export declare type Schema<T extends object = {
+export type Schema<T extends object = {
     [key: string]: any;
 }, M extends object = {
     [key: string]: CustomEntityFunction<T>;

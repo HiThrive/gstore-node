@@ -1,10 +1,10 @@
 import GstoreEntity from '../entity';
 import GstoreModel from '../model';
 import { GenericObject, EntityKey, EntityData, DatastoreSaveMethod } from '../types';
-declare type ToDatastoreOptions = {
+type ToDatastoreOptions = {
     method?: DatastoreSaveMethod;
 };
-declare type DatastoreFormat = {
+type DatastoreFormat = {
     key: EntityKey;
     data: EntityData;
     excludeLargeProperties?: boolean;
