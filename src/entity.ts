@@ -59,6 +59,14 @@ export class GstoreEntity<T extends object = GenericObject> {
      */
     this.context = {};
 
+    // Get the model class
+    const model = this.constructor as Model<T>;
+
+    // Set up required properties from the model
+    if (!this.__gstore) this.__gstore = model.gstore;
+    if (!this.__schema) this.__schema = model.schema;
+    if (!this.__entityKind) this.__entityKind = model.entityKind;
+
     if (key) {
       if (!this.gstore.ds.isKey(key)) {
         throw new Error('Entity Key must be a Datastore Key');

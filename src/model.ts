@@ -297,11 +297,6 @@ export const generateModel = <T extends object, M extends object>(
 
     constructor(data?: EntityData<T>, id?: IdType, ancestors?: Ancestor, namespace?: string, key?: EntityKey) {
       super(data, id, ancestors, namespace, key);
-      Object.defineProperties(this, {
-        __gstore: { value: gstore, writable: false },
-        __schema: { value: schema, writable: false },
-        __entityKind: { value: kind, writable: false }
-      });
     }
 
     static key<U extends IdType | IdType[], R = U extends Array<IdType> ? EntityKey[] : EntityKey>(
@@ -1100,6 +1095,14 @@ export const generateModel = <T extends object, M extends object>(
 
     static findAround: any; // Is added below from the Query instance
   } as unknown) as Model<T, M>;
+
+  // Set up the prototype chain properly
+  Object.setPrototypeOf(model.prototype, GstoreEntity.prototype);
+  Object.defineProperties(model.prototype, {
+    __gstore: { value: gstore, writable: false },
+    __schema: { value: schema, writable: false },
+    __entityKind: { value: kind, writable: false }
+  });
 
   const query = new Query<T, M>(model);
   const { initQuery, list, findOne, findAround } = query;
