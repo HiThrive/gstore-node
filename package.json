@@ -21,7 +21,6 @@
     "test:unit": "jest --c=jest.config.unit.js --coverage",
     "test:integration": "DATASTORE_EMULATOR_HOST=localhost:8081 jest --c=jest.config.integration.js"
   },
-  "type": "module",
   "engines": {
     "node": ">=20.0"
   },
