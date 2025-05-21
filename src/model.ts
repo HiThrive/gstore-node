@@ -3,7 +3,7 @@ import arrify from 'arrify';
 import extend from 'extend';
 import hooks from 'promised-hooks';
 import dsAdapterFactory from 'nsql-cache-datastore';
-import { get, set } from 'lodash-es';
+import { get, set } from 'lodash';
 
 import { Transaction } from '@google-cloud/datastore';
 
