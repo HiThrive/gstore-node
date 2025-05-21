@@ -295,6 +295,13 @@ export const generateModel = <T extends object, M extends object>(
 
     static __hooksEnabled = true;
 
+    constructor(data?: EntityData<T>, id?: IdType, ancestors?: Ancestor, namespace?: string, key?: EntityKey) {
+      super(data, id, ancestors, namespace, key);
+      (this as any).__gstore = gstore;
+      (this as any).__schema = schema;
+      (this as any).__entityKind = kind;
+    }
+
     static key<U extends IdType | IdType[], R = U extends Array<IdType> ? EntityKey[] : EntityKey>(
       ids: U,
       ancestors?: Ancestor,
