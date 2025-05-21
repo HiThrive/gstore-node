@@ -286,7 +286,7 @@ export const generateModel = <T extends object, M extends object>(
   schema: Schema<T, M>,
   gstore: Gstore,
 ): Model<T, M> => {
-  const model = class GstoreModel extends GstoreEntity<T> {
+  const model = (class GstoreModel extends GstoreEntity<T> {
     static gstore: Gstore = gstore;
 
     static schema: Schema<T> = schema;
@@ -297,9 +297,6 @@ export const generateModel = <T extends object, M extends object>(
 
     constructor(data?: EntityData<T>, id?: IdType, ancestors?: Ancestor, namespace?: string, key?: EntityKey) {
       super(data, id, ancestors, namespace, key);
-      (this as any).__gstore = gstore;
-      (this as any).__schema = schema;
-      (this as any).__entityKind = kind;
     }
 
     static key<U extends IdType | IdType[], R = U extends Array<IdType> ? EntityKey[] : EntityKey>(
@@ -464,7 +461,7 @@ export const generateModel = <T extends object, M extends object>(
           entity.dataloader = options.dataloader;
         }
 
-        return entity.save(transaction).then(result => result as Entity<T, M>);
+        return entity.save(transaction).then((result) => result as Entity<T, M>);
       };
 
       const onTransactionSuccess = (): Promise<Entity<T, M>> => {
@@ -1097,7 +1094,7 @@ export const generateModel = <T extends object, M extends object>(
     static list: any; // Is added below from the Query instance
 
     static findAround: any; // Is added below from the Query instance
-  } as unknown as Model<T, M>;
+  } as unknown) as Model<T, M>;
 
   const query = new Query<T, M>(model);
   const { initQuery, list, findOne, findAround } = query;
@@ -1106,6 +1103,12 @@ export const generateModel = <T extends object, M extends object>(
   model.list = list.bind(query);
   model.findOne = findOne.bind(query);
   model.findAround = findAround.bind(query);
+
+  // TODO: Refactor how the Model/Entity relationship
+  // Attach props to prototype
+  model.prototype.__gstore = gstore;
+  model.prototype.__schema = schema;
+  model.prototype.__entityKind = kind;
 
   // Wrap the Model to add "pre" and "post" hooks functionalities
   hooks.wrap(model);
