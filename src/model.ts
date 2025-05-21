@@ -297,6 +297,11 @@ export const generateModel = <T extends object, M extends object>(
 
     constructor(data?: EntityData<T>, id?: IdType, ancestors?: Ancestor, namespace?: string, key?: EntityKey) {
       super(data, id, ancestors, namespace, key);
+      Object.defineProperties(this, {
+        __gstore: { value: gstore, writable: false },
+        __schema: { value: schema, writable: false },
+        __entityKind: { value: kind, writable: false }
+      });
     }
 
     static key<U extends IdType | IdType[], R = U extends Array<IdType> ? EntityKey[] : EntityKey>(
@@ -1103,12 +1108,6 @@ export const generateModel = <T extends object, M extends object>(
   model.list = list.bind(query);
   model.findOne = findOne.bind(query);
   model.findAround = findAround.bind(query);
-
-  // TODO: Refactor how the Model/Entity relationship
-  // Attach props to prototype
-  model.prototype.__gstore = gstore;
-  model.prototype.__schema = schema;
-  model.prototype.__entityKind = kind;
 
   // Wrap the Model to add "pre" and "post" hooks functionalities
   hooks.wrap(model);
