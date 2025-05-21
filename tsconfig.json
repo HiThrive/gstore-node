@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
-    "target": "es2020",
-    "module": "commonjs",
+    "target": "ESNext",
+    "module": "ESNext",
     "allowSyntheticDefaultImports": true,
-    "lib": ["es2020", "dom"],
+    "lib": ["ESNext"],
     "strict": true,
     "removeComments": false,
     "esModuleInterop": true,
