@@ -198,7 +198,11 @@ describe('Model (Integration Tests)', () => {
           await PostModel.get(postKey.name).populate(['user', 'publication'], ['email', 'privateVal']);
           throw new Error('Should not get here.');
         } catch (err) {
-          expect(err.message).equal('Only 1 property can be populated when fields to select are provided');
+          if (err instanceof Error) {
+            expect(err.message).equal('Only 1 property can be populated when fields to select are provided');
+          } else {
+            throw new Error('Expected an Error object');
+          }
         }
       });
 
