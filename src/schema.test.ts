@@ -1,5 +1,5 @@
 import chai from 'chai';
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 
 import { Gstore } from './index';
 import GstoreSchema from './schema';
@@ -94,7 +94,6 @@ describe('Schema', () => {
     });
 
     test('should not do anything if value passed is not a function', () => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       schema.method('doSomething', 123);
 
@@ -114,7 +113,6 @@ describe('Schema', () => {
     });
 
     test('should only allow function and object to be passed', () => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       schema.method(10, () => undefined);
 

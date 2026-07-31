@@ -16,7 +16,6 @@ describe('VirtualType', () => {
     const virtualType = new VirtualType('fullname');
 
     const fn = (): void => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       virtualType.get('string');
     };
@@ -36,7 +35,6 @@ describe('VirtualType', () => {
     const virtualType = new VirtualType('fullname');
 
     const fn = (): void => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       virtualType.set('string');
     };

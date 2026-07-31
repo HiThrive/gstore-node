@@ -1,8 +1,7 @@
 import redisStore from 'cache-manager-redis-store';
 import chai from 'chai';
 import Chance from 'chance';
-import { Datastore } from '@google-cloud/datastore';
-import { entity } from '@google-cloud/datastore/build/src/entity';
+import { Datastore, Key } from '@google-cloud/datastore';
 
 import { Gstore, EntityKey, Model } from '../../src';
 
@@ -30,7 +29,7 @@ const uniqueId = (): string => chance.string({ pool: 'abcdefghijklmnopqrstuvwxyz
 const uniqueNumericId = (): number => Number(`4${chance.string({ numeric: true, length: 15 })}`);
 
 const cleanUp = (cb: any): void => {
-  ((ds.delete(allKeys) as unknown) as Promise<any>).then(cb);
+  (ds.delete(allKeys) as unknown as Promise<any>).then(cb);
 };
 
 const addKey = (key: EntityKey): void => {
@@ -141,6 +140,6 @@ describe('Integration Tests (Cache)', () => {
 
     expect(response!.email).to.eq('test2@test.com');
     expect(response!.entityKey.name).to.eq(id);
-    expect(response!.entityKey instanceof entity.Key).to.eq(true);
+    expect(response!.entityKey instanceof Key).to.eq(true);
   });
 });

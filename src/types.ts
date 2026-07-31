@@ -1,7 +1,7 @@
-import { entity } from '@google-cloud/datastore/build/src/entity';
+import { Key } from '@google-cloud/datastore';
 import GstoreEntity from './entity';
 
-export type EntityKey = entity.Key;
+export type EntityKey = Key;
 
 export type EntityData<T = { [key: string]: any }> = { [P in keyof T]: T[P] };
 
@@ -48,7 +48,6 @@ export interface PromiseWithPopulate<T> extends Promise<T> {
  * ---------------------------------------------------
  */
 
-// From '@google-cloud/datastore/build/src/query';
 export type DatastoreOperator = '=' | '<' | '>' | '<=' | '>=' | 'HAS_ANCESTOR';
 
 export interface OrderOptions {

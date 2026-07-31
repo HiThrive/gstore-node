@@ -1,5 +1,5 @@
 import chai from 'chai';
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 
 import dsFactory from '../../__tests__/mocks/datastore';
 import Schema from '../schema';
@@ -486,10 +486,10 @@ describe('Joi Validation', () => {
     const { error: error5 } = validate({ name: 'John', unknownProp: 'abc' });
 
     expect(error).not.equal(null);
-    expect(error2.details[0].type).equal('any.allowOnly');
+    expect(error2.details[0].type).equal('any.only');
     expect(error3.details[0].type).equal('number.min');
     expect(error4.details[0].type).equal('string.email');
-    expect(error5.details[0].type).equal('object.allowUnknown');
+    expect(error5.details[0].type).equal('object.unknown');
   });
 
   test('should accept extra validation on top of the schema', () => {

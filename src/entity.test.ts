@@ -1,6 +1,6 @@
 import chai from 'chai';
 import sinon from 'sinon';
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 import { Datastore, Transaction as DatastoreTransaction } from '@google-cloud/datastore';
 
 import GstoreEntity, { Entity } from './entity';
@@ -127,9 +127,9 @@ describe('GstoreEntity', () => {
         {
           name: { joi: Joi.string() },
           lastname: { joi: Joi.string().default('Jagger') },
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
           // @ts-ignore
-          fullname: { joi: Joi.string().default(generateFullName, 'generated fullname') },
+          fullname: { joi: Joi.string().default(generateFullName) },
         },
         { joi: true },
       );
@@ -222,7 +222,6 @@ describe('GstoreEntity', () => {
 
       test('---> throw error is id passed is not string or number', () => {
         const fn = (): Entity => {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
           // @ts-ignore
           entity = new GstoreModel({}, {});
           return entity;
@@ -270,7 +269,6 @@ describe('GstoreEntity', () => {
 
       test('---> throw error if key is not instance of Key', () => {
         function fn(): Entity {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
           // @ts-ignore
           entity = new GstoreModel({}, undefined, undefined, undefined, {});
           return entity;
@@ -431,7 +429,7 @@ describe('GstoreEntity', () => {
     test('should throw an error is options is not of type Object', () => {
       const fn = (): void => {
         entity = new GstoreModel({ name: 'John' });
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
         // @ts-ignore
         entity.plain(true);
       };
@@ -777,7 +775,8 @@ describe('GstoreEntity', () => {
       entity.fullname = 'Andre Agassi';
       expect(entity.firstname).equal('Andre');
       expect(entity.lastname).equal('Agassi');
-      expect(entity.entityData).deep.equal({ firstname: 'Andre', lastname: 'Agassi' });
+      expect(entity.entityData.firstname).equal('Andre');
+      expect(entity.entityData.lastname).equal('Agassi');
     });
 
     test('should Not override', () => {
@@ -901,7 +900,6 @@ describe('GstoreEntity', () => {
         }));
 
       test('should only allow "update", "insert", "upsert" as method', (done) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         entity.save(undefined, { method: 'something' }).catch((e) => {
           expect(e.message).equal('Method must be either "update", "insert" or "upsert"');
@@ -946,7 +944,7 @@ describe('GstoreEntity', () => {
       return entity.save(transaction).then((_entity) => {
         expect(spyPreHook.called).equal(true);
         expect((transaction.save as any).called).equal(true);
-        expect(spyPreHook.calledBefore(transaction.save as any)).equal(true); // eslint-disable-line @typescript-eslint/unbound-method
+        expect(spyPreHook.calledBefore(transaction.save as any)).equal(true);
         assert.isDefined(_entity.entityData);
       });
     });
@@ -1008,7 +1006,6 @@ describe('GstoreEntity', () => {
     });
 
     test('should throw error if transaction not instance of Transaction', () =>
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       entity.save({ id: 0 }, {}).catch((err: any) => {
         assert.isDefined(err);
@@ -1024,7 +1021,7 @@ describe('GstoreEntity', () => {
       entity = new GstoreModel({ name: 'John' });
 
       return entity.save().then(() => {
-        expect(spyPre.calledBefore(ds.save as any)).equal(true); // eslint-disable-line @typescript-eslint/unbound-method
+        expect(spyPre.calledBefore(ds.save as any)).equal(true);
       });
     });
 

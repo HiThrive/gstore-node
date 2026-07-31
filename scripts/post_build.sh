@@ -1,6 +1,9 @@
 #!/bin/bash
+set -euo pipefail
 
-rm lib/package.json
-mv $(pwd)/lib/src/* $(pwd)/lib
+rm -f lib/package.json
+mv "$(pwd)"/lib/src/* "$(pwd)"/lib
 rm -rf lib/src
-find ./lib -type f -name '*.test.*' -exec rm {} +
+
+# Test files are excluded from tsconfig; clean any leftovers defensively.
+rm -f lib/**/*.test.* lib/**/**/*.test.* 2>/dev/null || true

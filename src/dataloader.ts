@@ -2,7 +2,7 @@ import optional from 'optional';
 import arrify from 'arrify';
 import datastoreAdapterFactory from 'nsql-cache-datastore';
 import { Datastore } from '@google-cloud/datastore';
-import DataLoader from 'dataloader'; // eslint-disable-line import/no-extraneous-dependencies
+import DataLoader from 'dataloader';
 
 import { EntityKey, EntityData } from './types';
 

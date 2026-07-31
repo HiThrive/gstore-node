@@ -9,10 +9,6 @@ export interface ValidateResponse {
     catch: (onError: (error: ValidationError) => any) => Promise<any> | undefined;
 }
 declare const _default: {
-    validate: <T extends object>(entityData: EntityData<{
-        [key: string]: any;
-    }>, schema: Schema<T, {
-        [key: string]: import("../types").CustomEntityFunction<T>;
-    }>, entityKind: string, datastore: Datastore) => ValidateResponse;
+    validate: <T extends object>(entityData: EntityData, schema: Schema<T>, entityKind: string, datastore: Datastore) => ValidateResponse;
 };
 export default _default;

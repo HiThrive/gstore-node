@@ -28,12 +28,15 @@ const toDatastore = <T extends object>(
   entity: GstoreEntity<T>,
   options: ToDatastoreOptions | undefined = {},
 ): DatastoreFormat => {
-  const data = Object.entries(entity.entityData).reduce((acc, [key, value]) => {
-    if (typeof value !== 'undefined') {
-      acc[key] = value;
-    }
-    return acc;
-  }, {} as { [key: string]: any });
+  const data = Object.entries(entity.entityData).reduce(
+    (acc, [key, value]) => {
+      if (typeof value !== 'undefined') {
+        acc[key] = value;
+      }
+      return acc;
+    },
+    {} as { [key: string]: any },
+  );
 
   const excludeFromIndexes = getExcludeFromIndexes(data, entity);
 
@@ -159,7 +162,7 @@ const fromDatastore = <F extends 'JSON' | 'ENTITY' = 'JSON', R = F extends 'ENTI
  */
 const entitiesToDatastore = <
   T extends GstoreEntity | GstoreEntity[],
-  R = T extends GstoreEntity ? DatastoreFormat : DatastoreFormat[]
+  R = T extends GstoreEntity ? DatastoreFormat : DatastoreFormat[],
 >(
   entities: T,
   options: ToDatastoreOptions | undefined = {},
@@ -169,7 +172,7 @@ const entitiesToDatastore = <
 
   if (entitiesToArray[0] instanceof GstoreEntity !== true) {
     // Not an entity instance, nothing to do here...
-    return (entities as unknown) as R;
+    return entities as unknown as R;
   }
 
   const result = entitiesToArray.map((e) => toDatastore(e, options));

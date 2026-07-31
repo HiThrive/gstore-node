@@ -80,11 +80,11 @@ const mapUserToId = users.reduce(
 );
 
 const cleanUp = (): Promise<any> =>
-  ((ds.delete(allKeys) as unknown) as Promise<any>)
+  (ds.delete(allKeys) as unknown as Promise<any>)
     .then(() => Promise.all([UserModel.deleteAll(), AddressModel.deleteAll()]))
     .catch((err) => {
-        console.log('Error cleaning up'); // eslint-disable-line
-        console.log(err); // eslint-disable-line
+      console.log('Error cleaning up');
+      console.log(err);
     });
 
 describe('Queries (Integration Tests)', () => {
@@ -307,7 +307,7 @@ describe('Queries (Integration Tests)', () => {
               const addressId = mapUserToId[entityKey.name].address.name;
               const address = mapAddressToId[addressId];
               expect((entity.address as GenericObject).country).equal(address.country);
-              // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
               // @ts-ignore
               expect(entity.unknown).equal(null);
               assert.isUndefined((entity.address as GenericObject).city);

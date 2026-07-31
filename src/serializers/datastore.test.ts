@@ -1,5 +1,5 @@
 import chai from 'chai';
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 
 import dsFactory from '../../__tests__/mocks/datastore';
 import { Gstore, QUERIES_FORMATS } from '../index';

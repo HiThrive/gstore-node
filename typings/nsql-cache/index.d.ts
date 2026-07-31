@@ -1,6 +1,5 @@
 declare module 'nsql-cache' {
-  import { entity } from '@google-cloud/datastore/build/src/entity';
-  import { Query } from '@google-cloud/datastore/build/src/query';
+  import { Key, Query } from '@google-cloud/datastore';
 
   export interface NsqlCacheConfig {
     ttl?: {
@@ -47,15 +46,15 @@ declare module 'nsql-cache' {
 
     keys: {
       read(
-        keys: entity.Key | entity.Key[],
+        keys: Key | Key[],
         options?: { ttl?: number | { [propName: string]: number } },
-        fetchHandler?: (keys: entity.Key | entity.Key[]) => Promise<any>,
+        fetchHandler?: (keys: Key | Key[]) => Promise<any>,
       ): Promise<any>;
-      get(key: entity.Key): Promise<any>;
-      mget(...keys: entity.Key[]): Promise<any>;
-      set(key: entity.Key, data: any, options?: { ttl: number | { [propName: string]: number } }): Promise<any>;
+      get(key: Key): Promise<any>;
+      mget(...keys: Key[]): Promise<any>;
+      set(key: Key, data: any, options?: { ttl: number | { [propName: string]: number } }): Promise<any>;
       mset(...args: any[]): Promise<any>;
-      del(...keys: entity.Key[]): Promise<any>;
+      del(...keys: Key[]): Promise<any>;
     };
 
     queries: {

@@ -107,7 +107,7 @@ export declare class GstoreEntity<T extends object = GenericObject> {
     private __getEntityDataWithVirtuals;
 }
 export default GstoreEntity;
-export declare type Entity<T extends object = GenericObject, M extends object = {
+export type Entity<T extends object = GenericObject, M extends object = {
     [key: string]: CustomEntityFunction<T>;
 }> = GstoreEntity<T> & T & M;
 interface SaveOptions {

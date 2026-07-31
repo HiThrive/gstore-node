@@ -1,4 +1,4 @@
-import isDateValid from 'date-fns/isValid';
+import { isValid as isDateValid } from 'date-fns';
 import validator from 'validator';
 import is from 'is';
 import { Datastore } from '@google-cloud/datastore';

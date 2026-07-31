@@ -1,4 +1,3 @@
-import util from 'util';
 import chai from 'chai';
 import { GstoreError, TypeError, message } from './errors';
 
@@ -24,21 +23,21 @@ describe('GstoreError', () => {
   test('should create a custom Error', () => {
     try {
       doSomethingBad();
-    } catch (e) {
+    } catch (err) {
+      const e = err as GstoreError;
       expect(e.name).equal('GstoreError');
       expect(e instanceof GstoreError);
       expect(e instanceof Error);
 
-      // The error should be recognized by Node.js' util#isError
-      expect(util.isError(e)).equal(true);
+      expect(e instanceof Error).equal(true);
       assert.isDefined(e.stack);
       expect(e.toString()).equal('GstoreError: An error occured');
 
       // The stack should start with the default error message formatting
-      expect(e.stack.split('\n')[0]).equal('GstoreError: An error occured');
+      expect(e.stack!.split('\n')[0]).equal('GstoreError: An error occured');
 
       // The first stack frame should be the function where the error was thrown.
-      expect(e.stack.split('\n')[1].indexOf('doSomethingBad')).equal(7);
+      expect(e.stack!.split('\n')[1].indexOf('doSomethingBad')).equal(7);
 
       // The error code should be set
       expect(e.code).equal('ERR_GENERIC');
@@ -52,7 +51,8 @@ describe('GstoreError', () => {
 
     try {
       func();
-    } catch (e) {
+    } catch (err) {
+      const e = err as GstoreError;
       expect(e.code).equal('ERR_GENERIC');
       expect(e.toString()).equal('GstoreError: An error occured');
     }
@@ -68,7 +68,8 @@ describe('TypeError', () => {
 
     try {
       throwTypeError();
-    } catch (e) {
+    } catch (err) {
+      const e = err as TypeError;
       expect(e.name).equal('TypeError');
       expect(e instanceof TypeError);
       expect(e instanceof GstoreError);

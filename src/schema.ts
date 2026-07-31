@@ -17,7 +17,7 @@ import {
 import { QueryListOptions } from './query';
 import helpers from './helpers';
 
-const Joi = optional('@hapi/joi') || optional('joi');
+const Joi = optional('joi') || optional('@hapi/joi');
 
 const IS_QUERY_METHOD: { [key: string]: boolean } = {
   update: true,
@@ -260,33 +260,41 @@ class Schema<T extends object = any, M extends object = { [key: string]: CustomE
         value: entityData,
       };
     }
-    return this.joiSchema!.validate(entityData, (this.options.joi as JoiConfig).options || {});
+    const result = this.joiSchema!.validate(entityData, (this.options.joi as JoiConfig).options || {});
+    // Joi 17+ returns undefined error on success; keep null for backward compatibility
+    return {
+      ...result,
+      error: result.error || null,
+    };
   }
 
   updateExcludedFromIndexesMap(property: keyof T, definition: SchemaPathDefinition): void {
-    const isArray = definition.type === Array || (definition.joi && definition.joi._type === 'array');
-    const isObject = definition.type === Object || (definition.joi && definition.joi._type === 'object');
+    const joiType = definition.joi && (definition.joi.type || definition.joi._type);
+    const isArray = definition.type === Array || joiType === 'array';
+    const isObject = definition.type === Object || joiType === 'object';
+
+    const propName = String(property);
 
     if (definition.excludeFromIndexes === true) {
       if (isArray) {
         // We exclude both the array values + all the child properties of object items
-        this.excludedFromIndexes[property] = [`${property}[]`, `${property}[].*`];
+        this.excludedFromIndexes[property] = [`${propName}[]`, `${propName}[].*`];
       } else if (isObject) {
         // We exclude the emmbeded entity + all its properties
-        this.excludedFromIndexes[property] = [property as string, `${property}.*`];
+        this.excludedFromIndexes[property] = [propName, `${propName}.*`];
       } else {
-        this.excludedFromIndexes[property] = [property as string];
+        this.excludedFromIndexes[property] = [propName];
       }
     } else if (definition.excludeFromIndexes !== false) {
       const excludedArray = arrify(definition.excludeFromIndexes) as string[];
       if (isArray) {
         // The format to exclude a property from an embedded entity inside
         // an array is: "myArrayProp[].embeddedKey"
-        this.excludedFromIndexes[property] = excludedArray.map((propExcluded) => `${property}[].${propExcluded}`);
+        this.excludedFromIndexes[property] = excludedArray.map((propExcluded) => `${propName}[].${propExcluded}`);
       } else if (isObject) {
         // The format to exclude a property from an embedded entity
         // is: "myEmbeddedEntity.key"
-        this.excludedFromIndexes[property] = excludedArray.map((propExcluded) => `${property}.${propExcluded}`);
+        this.excludedFromIndexes[property] = excludedArray.map((propExcluded) => `${propName}.${propExcluded}`);
       }
     }
   }

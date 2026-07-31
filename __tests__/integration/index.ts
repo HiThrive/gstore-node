@@ -42,11 +42,11 @@ const getUser = (): Entity<any> & GenericObject => {
 };
 
 const cleanUp = (): Promise<any> =>
-  ((ds.delete(allKeys) as unknown) as Promise<any>)
+  (ds.delete(allKeys) as unknown as Promise<any>)
     .then(() => UserModel.deleteAll())
     .catch((err) => {
-      console.log('Error cleaning up'); // eslint-disable-line
-      console.log(err); // eslint-disable-line
+      console.log('Error cleaning up');
+      console.log(err);
     });
 
 describe('Gstore (Integration Tests)', () => {

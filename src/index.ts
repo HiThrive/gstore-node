@@ -303,12 +303,12 @@ export type Entity<T extends object = GenericObject> = EntityType<T>;
 
 export type Model<
   T extends object = GenericObject,
-  M extends object = { [key: string]: CustomEntityFunction<T> }
+  M extends object = { [key: string]: CustomEntityFunction<T> },
 > = GstoreModel<T, M>;
 
 export type Schema<
   T extends object = { [key: string]: any },
-  M extends object = { [key: string]: CustomEntityFunction<T> }
+  M extends object = { [key: string]: CustomEntityFunction<T> },
 > = GstoreSchema<T, M>;
 
 export { QUERIES_FORMATS } from './constants';

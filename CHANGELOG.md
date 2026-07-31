@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [9.0.0](https://github.com/HiThrive/gstore-node/compare/v8.0.0...v9.0.0) (2026-07-31)
+
+### ⚠ BREAKING CHANGES
+
+- Requires **Node.js >= 18**
+- Peer dependency `@google-cloud/datastore` is now `>= 6.0.0 < 11`
+- Prefer the `joi` package for Joi validation (`@hapi/joi` remains a fallback)
+- Public types now use `Key` from `@google-cloud/datastore` instead of deep `build/src/entity` imports
+- Tooling standardized on **npm** (yarn.lock removed)
+
+### Features / Dependency modernization
+
+- Bump runtime deps: `validator`, `date-fns` v4, `dataloader` v2; remove vulnerable `lodash.get` / `lodash.set`
+- Migrate build/test stack to TypeScript 5, Jest 29, ESLint 9 flat config, Prettier 3
+- Replace Travis CI with GitHub Actions (Node 18/20/22, Datastore emulator, Redis)
+- Normalize Joi success `error` to `null` for compatibility with Joi 17+
+
 ## [8.0.0](https://github.com/sebelga/gstore-node/compare/v7.2.8...v8.0.0) (2022-04-07)
 
 ### ⚠ BREAKING CHANGES

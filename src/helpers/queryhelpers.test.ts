@@ -18,7 +18,6 @@ describe('Query Helpers', () => {
 
     test('and throw error if no query passed', () => {
       const fn = (): void => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         queryHelpers.buildQueryFromOptions();
       };
@@ -28,7 +27,6 @@ describe('Query Helpers', () => {
 
     test('and throw error if query is not a gcloud Query', () => {
       const fn = (): void => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         queryHelpers.buildQueryFromOptions({});
       };
@@ -159,7 +157,6 @@ describe('Query Helpers', () => {
         filters: 'name',
       };
       const fn = (): void => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         query = queryHelpers.buildQueryFromOptions(query, options, ds);
       };

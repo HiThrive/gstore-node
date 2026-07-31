@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-expressions */
-
 import chai from 'chai';
 import Chance from 'chance';
 import { Datastore } from '@google-cloud/datastore';
@@ -54,7 +52,7 @@ describe('Schema (Integration Tests)', () => {
       .then((entity) => {
         const response = entity.plain();
         expect(response.password).to.not.exist;
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
         // @ts-ignore
         expect(response.requested).to.not.exist;
 

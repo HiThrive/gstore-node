@@ -169,7 +169,6 @@ describe('gstore-node', () => {
     });
 
     test('should throw an error if no entities passed', () => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       const func = (): Promise<any> => gstore.save();
 
@@ -253,10 +252,9 @@ describe('gstore-node', () => {
     });
 
     test('should throw Error if wrong config', () => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       const func1 = (): Gstore => new Gstore(0);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
       // @ts-ignore
       const func2 = (): Gstore => new Gstore('some-string');
 

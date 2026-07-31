@@ -1,5 +1,3 @@
-/* eslint-disable max-classes-per-file, no-use-before-define */
-
 import util from 'util';
 import is from 'is';
 

@@ -40,7 +40,7 @@ export interface GstoreQuery<T, R> extends Omit<DatastoreQuery, 'run' | 'filter'
     filter<P extends keyof T>(property: P, operator: DatastoreOperator, value: T[P]): this;
     order(property: keyof T, options?: OrderOptions): this;
 }
-declare type QueryRunFunc<T, R> = (options?: QueryOptions, responseHandler?: (res: QueryResponse<T>) => R) => PromiseWithPopulate<R>;
+type QueryRunFunc<T, R> = (options?: QueryOptions, responseHandler?: (res: QueryResponse<T>) => R) => PromiseWithPopulate<R>;
 export interface QueryOptions {
     /**
      * Specify either strong or eventual. If not specified, default values are chosen by Datastore for the operation.

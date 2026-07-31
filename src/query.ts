@@ -90,18 +90,16 @@ class Query<T extends object, M extends object> {
       return promise;
     };
 
-    /* eslint-disable @typescript-eslint/unbound-method */
     // ((query as unknown) as GstoreQuery<T, QueryResponse<T>>).__originalRun = ((query as unknown) as DatastoreQuery).run;
-    ((query as unknown) as GstoreQuery<T, R>).__originalRun = query.run;
+    (query as unknown as GstoreQuery<T, R>).__originalRun = query.run;
     (query as any).run = enhancedQueryRun;
-    /* eslint-enable @typescript-eslint/unbound-method */
 
-    return (query as unknown) as GstoreQuery<T, R>;
+    return query as unknown as GstoreQuery<T, R>;
   }
 
   list<
     U extends QueryListOptions<T>,
-    Outputformat = U['format'] extends EntityFormatType ? Entity<T, M> : EntityData<T>
+    Outputformat = U['format'] extends EntityFormatType ? Entity<T, M> : EntityData<T>,
   >(options: U = {} as U): PromiseWithPopulate<QueryResponse<T, Outputformat[]>> {
     // If global options set in schema, we extend it with passed options
     if ({}.hasOwnProperty.call(this.Model.schema.shortcutQueries, 'list')) {
@@ -131,16 +129,16 @@ class Query<T extends object, M extends object> {
     this.Model.__hooksEnabled = true;
 
     if (!is.object(keyValues)) {
-      return Promise.reject(new Error('[gstore.findOne()]: "Params" has to be an object.')) as PromiseWithPopulate<
-        never
-      >;
+      return Promise.reject(
+        new Error('[gstore.findOne()]: "Params" has to be an object.'),
+      ) as PromiseWithPopulate<never>;
     }
 
     const query = this.initQuery<Entity<T, M> | null>(namespace, transaction);
     query.limit(1);
 
     Object.keys(keyValues).forEach((k) => {
-      query.filter(k as keyof T, keyValues[k as keyof T]);
+      query.filter(k as keyof T, keyValues[k as keyof T] as T[keyof T]);
     });
 
     if (ancestors) {
@@ -179,7 +177,7 @@ class Query<T extends object, M extends object> {
    */
   findAround<
     U extends QueryFindAroundOptions,
-    Outputformat = U['format'] extends EntityFormatType ? Entity<T, M> : EntityData<T>
+    Outputformat = U['format'] extends EntityFormatType ? Entity<T, M> : EntityData<T>,
   >(property: keyof T, value: any, options: U, namespace?: string): PromiseWithPopulate<Outputformat[]> {
     const validateArguments = (): { error: Error | null } => {
       if (!property || !value || !options) {
@@ -216,7 +214,7 @@ class Query<T extends object, M extends object> {
     query.limit(options.after ? options.after : options.before!);
 
     const { after, before, ...rest } = options;
-    return query.run(rest, (res: QueryResponse<T>) => (res.entities as unknown) as Outputformat[]);
+    return query.run(rest, (res: QueryResponse<T>) => res.entities as unknown as Outputformat[]);
   }
 }
 

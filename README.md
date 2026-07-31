@@ -5,9 +5,9 @@
 > Entities modeling for Google's Datastore
 
 [![NPM Version][npm-image]][npm-url]
-[![Build Status][travis-image]][travis-url]
-[![coveralls-image]][coveralls-url]
-[![Commitizen friendly][commitizen-image]][commitizen-url]  
+[![Build Status][ci-image]][ci-url]
+[![Commitizen friendly][commitizen-image]][commitizen-url]
+
 
 ## :tada: **NEWS**: new maintainer!
 
@@ -46,7 +46,10 @@ npm install gstore-node --save
 yarn add gstore-node
 ```
 
-**Important**: gstore-node requires Node version **8+**  
+**Important**: gstore-node requires Node.js **18+** and `@google-cloud/datastore` **>= 6 < 11**.
+
+For Joi validation, install the `joi` package (the deprecated `@hapi/joi` package is still resolved as a fallback).
+
 
 # Getting started
 
@@ -314,18 +317,18 @@ If you want to see an example on how to use gstore-node in your Node.js app, che
 1. Install npm dependencies
 
 ```
-yarn install
+npm install
 ```
 
 2. Run the unit tests
 
 ```
-yarn test:unit
+npm run test:unit
 ```
 
 3. Run the integration tests
 
-**Prerequise:**  
+**Prerequisite:**  
 In order to run the integration tests you need to have the [Google Datastore Emulator](https://cloud.google.com/datastore/docs/tools/datastore-emulator) installed as well as [Redis](https://redis.io/).
 
 * Launch the Redis server  
@@ -339,14 +342,14 @@ cd src && ./redis-server
 
 ```
 # From the root of the project
-yarn local-datastore
+npm run local-datastore
 ```
 
 * Execute the integration tests (separate terminal window)
 
 ```
 # From the root of the project
-yarn test:integration
+npm run test:integration
 ```
 
 ## Meta
@@ -373,9 +376,7 @@ Not much could neither have been done without the great work of the guys at [goo
 [npm-image]: https://img.shields.io/npm/v/gstore-node.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/gstore-node
 [npm-downloads]: https://img.shields.io/npm/dm/gstore-node.svg?style=flat-square
-[travis-image]: https://img.shields.io/travis/sebelga/gstore-node/master.svg?style=flat-square
-[travis-url]: https://travis-ci.com/sebelga/gstore-node
-[coveralls-image]: https://img.shields.io/coveralls/github/sebelga/gstore-node.svg
-[coveralls-url]: https://coveralls.io/github/sebelga/gstore-node?branch=master
+[ci-image]: https://github.com/HiThrive/gstore-node/actions/workflows/ci.yml/badge.svg
+[ci-url]: https://github.com/HiThrive/gstore-node/actions/workflows/ci.yml
 [commitizen-image]: https://img.shields.io/badge/commitizen-friendly-brightgreen.svg
 [commitizen-url]: http://commitizen.github.io/cz-cli/

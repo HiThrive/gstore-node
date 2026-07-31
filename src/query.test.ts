@@ -130,7 +130,6 @@ describe('Query', () => {
 
     test('should throw error if calling unregistered query method', () => {
       const fn = (): GstoreQuery<any, any> => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         query = ModelInstance.query().unkown('test', false);
         return query;
@@ -215,7 +214,6 @@ describe('Query', () => {
 
     test('should not set transaction if not an instance of gcloud Transaction', () => {
       const fn = (): void => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         query = ModelInstance.query(undefined, {});
       };
@@ -281,7 +279,7 @@ describe('Query', () => {
     let queryMock: Query;
 
     beforeEach(() => {
-      sinon.stub(ds, 'createQuery').callsFake((namespace: string) => {
+      sinon.stub(ds, 'createQuery').callsFake(((namespace: string) => {
         queryMock = new Query(ds, { entities: mockEntities }, undefined, namespace);
 
         sinon.spy(queryMock, 'run');
@@ -292,7 +290,7 @@ describe('Query', () => {
         sinon.spy(queryMock, 'offset');
 
         return queryMock;
-      });
+      }) as any);
     });
 
     afterEach(() => {
@@ -443,7 +441,6 @@ describe('Query', () => {
         }));
 
       test('should throw error if not all arguments are passed', (done) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         ModelInstance.findAround('createdOn', '2016-1-1').catch((err) => {
           expect(err.message).equal('[gstore.findAround()]: Not all the arguments were provided.');
@@ -452,7 +449,6 @@ describe('Query', () => {
       });
 
       test('should validate that options passed is an object', (done) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         ModelInstance.findAround('createdOn', '2016-1-1', 'string').catch((err) => {
           expect(err.message).equal('[gstore.findAround()]: Options pased has to be an object.');
@@ -574,7 +570,6 @@ describe('Query', () => {
         }));
 
       test('should validate that params passed are object', (done) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         ModelInstance.findOne('some string').catch((err) => {
           expect(err.message).equal('[gstore.findOne()]: "Params" has to be an object.');

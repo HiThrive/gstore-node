@@ -65,11 +65,11 @@ const getUser = (addressEntity: Entity<any>, id: string | number = getId()): Ent
 };
 
 const cleanUp = (): Promise<any> =>
-  ((ds.delete(allKeys) as unknown) as Promise<any>)
+  (ds.delete(allKeys) as unknown as Promise<any>)
     .then(() => Promise.all([UserModel.deleteAll(), AddressModel.deleteAll(), AddressBookModel.deleteAll()]))
     .catch((err) => {
-                console.log('Error cleaning up'); // eslint-disable-line
-                console.log(err); // eslint-disable-line
+      console.log('Error cleaning up');
+      console.log(err);
     });
 
 describe('Entity (Integration Tests)', () => {
@@ -117,7 +117,7 @@ describe('Entity (Integration Tests)', () => {
         .then(() => {
           expect(user.address.city).equal(address.city);
           expect(user.address.country).equal(address.country);
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
           // @ts-ignore
           expect(user.entityData.unknown).equal(null);
         }));

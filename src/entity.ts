@@ -139,7 +139,7 @@ export class GstoreEntity<T extends object = GenericObject> {
       if ((this.constructor as Model).__hasCache(options)) {
         return (this.constructor as Model)
           .clearCache()
-          .then(() => (this as unknown) as Entity<T>)
+          .then(() => this as unknown as Entity<T>)
           .catch((err: any) => {
             let msg = 'Error while clearing the cache after saving the entity.';
             msg += 'The entity has been saved successfully though. ';
@@ -151,7 +151,7 @@ export class GstoreEntity<T extends object = GenericObject> {
           });
       }
 
-      return Promise.resolve((this as unknown) as Entity<T>);
+      return Promise.resolve(this as unknown as Entity<T>);
     };
 
     /**
@@ -195,7 +195,7 @@ export class GstoreEntity<T extends object = GenericObject> {
       attachPostHooksToTransaction();
       transaction.save(datastoreEntity);
 
-      return Promise.resolve((this as unknown) as Entity<T>);
+      return Promise.resolve(this as unknown as Entity<T>);
     }
 
     return this.gstore.ds.save(datastoreEntity).then(onEntitySaved);
@@ -240,7 +240,7 @@ export class GstoreEntity<T extends object = GenericObject> {
       showKey,
     });
 
-    return data;
+    return data as Partial<EntityData<T>> & { [key: string]: any };
   }
 
   get<P extends keyof T>(path: P): any {
@@ -253,11 +253,11 @@ export class GstoreEntity<T extends object = GenericObject> {
   set<P extends keyof T>(path: P, value: any): Entity<T> {
     if ({}.hasOwnProperty.call(this.schema.__virtuals, path)) {
       this.schema.__virtuals[path as string].applySetters(value, this.entityData);
-      return (this as unknown) as Entity<T>;
+      return this as unknown as Entity<T>;
     }
 
     this.entityData[path] = value;
-    return (this as unknown) as Entity<T>;
+    return this as unknown as Entity<T>;
   }
 
   /**
@@ -298,7 +298,7 @@ export class GstoreEntity<T extends object = GenericObject> {
       }
 
       this.entityData = entityData;
-      return (this as unknown) as Entity<T>;
+      return this as unknown as Entity<T>;
     };
 
     if ((this.constructor as Model<T>).__hasCache(options)) {
@@ -482,7 +482,7 @@ export class GstoreEntity<T extends object = GenericObject> {
 
     // Create virtual properties (getters and setters for entityData object)
     Object.keys(schema.paths)
-      .filter((pathKey) => ({}.hasOwnProperty.call(schema.paths, pathKey)))
+      .filter((pathKey) => ({}).hasOwnProperty.call(schema.paths, pathKey))
       .forEach((pathKey) =>
         Object.defineProperty(this, pathKey, {
           get: function getProp() {
@@ -497,7 +497,7 @@ export class GstoreEntity<T extends object = GenericObject> {
     // Create virtual properties (getters and setters for "virtuals" defined on the Schema)
 
     Object.keys(schema.__virtuals)
-      .filter((key) => ({}.hasOwnProperty.call(schema.__virtuals, key)))
+      .filter((key) => ({}).hasOwnProperty.call(schema.__virtuals, key))
       .forEach((key) =>
         Object.defineProperty(this, key, {
           get: function getProp() {
@@ -562,7 +562,7 @@ export default GstoreEntity;
 
 export type Entity<
   T extends object = GenericObject,
-  M extends object = { [key: string]: CustomEntityFunction<T> }
+  M extends object = { [key: string]: CustomEntityFunction<T> },
 > = GstoreEntity<T> & T & M;
 
 interface SaveOptions {

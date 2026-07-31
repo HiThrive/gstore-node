@@ -3,8 +3,6 @@ import arrify from 'arrify';
 import extend from 'extend';
 import hooks from 'promised-hooks';
 import dsAdapterFactory from 'nsql-cache-datastore';
-import get from 'lodash.get';
-import set from 'lodash.set';
 
 import { Transaction } from '@google-cloud/datastore';
 
@@ -14,6 +12,7 @@ import GstoreEntity, { Entity } from './entity';
 import Query, { QueryResponse, GstoreQuery } from './query';
 import { GstoreError, ERROR_CODES } from './errors';
 import helpers from './helpers';
+import { get, set } from './helpers/path';
 import {
   FuncReturningPromise,
   CustomEntityFunction,
@@ -38,7 +37,7 @@ const { populateFactory } = populateHelpers;
 
 export interface Model<
   T extends object = GenericObject,
-  M extends object = { [key: string]: CustomEntityFunction<T> }
+  M extends object = { [key: string]: CustomEntityFunction<T> },
 > {
   new (data?: EntityData<T>, id?: IdType, ancestors?: Ancestor, namespace?: string, key?: EntityKey): Entity<T, M>;
 
@@ -191,7 +190,7 @@ export interface Model<
    */
   query<
     F extends JSONFormatType | EntityFormatType = JSONFormatType,
-    R = F extends EntityFormatType ? QueryResponse<T, Entity<T, M>[]> : QueryResponse<T, EntityData<T>[]>
+    R = F extends EntityFormatType ? QueryResponse<T, Entity<T, M>[]> : QueryResponse<T, EntityData<T>[]>,
   >(
     namespace?: string,
     transaction?: Transaction,
@@ -287,7 +286,7 @@ export const generateModel = <T extends object, M extends object>(
   schema: Schema<T, M>,
   gstore: Gstore,
 ): Model<T, M> => {
-  const model: Model<T, M> = class GstoreModel extends GstoreEntity<T> {
+  const model = class GstoreModel extends GstoreEntity<T> {
     static gstore: Gstore = gstore;
 
     static schema: Schema<T> = schema;
@@ -348,7 +347,7 @@ export const generateModel = <T extends object, M extends object>(
         keys.push(key);
       }
 
-      return isMultiple ? ((keys as unknown) as R) : ((keys[0] as unknown) as R);
+      return isMultiple ? (keys as unknown as R) : (keys[0] as unknown as R);
     }
 
     static get<U extends IdType | Array<IdType>>(
@@ -393,7 +392,9 @@ export const generateModel = <T extends object, M extends object>(
 
         // TODO: Check if this is still useful??
         if (Array.isArray(id) && options.preserveOrder && entity.every((e) => typeof e !== 'undefined' && e !== null)) {
-          (entity as GstoreEntity<T>[]).sort((a, b) => id.indexOf(a.entityKey.id) - id.indexOf(b.entityKey.id));
+          (entity as GstoreEntity<T>[]).sort(
+            (a, b) => id.indexOf(a.entityKey.id as IdType) - id.indexOf(b.entityKey.id as IdType),
+          );
         }
 
         return Array.isArray(id) ? (entity as GstoreEntity<T>[]) : entity[0];
@@ -576,7 +577,7 @@ export const generateModel = <T extends object, M extends object>(
         return Promise.resolve({ key });
       }
 
-      return ((this.gstore.ds.delete(key) as unknown) as Promise<any>).then((results?: [{ indexUpdates?: number }]) => {
+      return (this.gstore.ds.delete(key) as unknown as Promise<any>).then((results?: [{ indexUpdates?: number }]) => {
         const response: DeleteResponse = results ? results[0] : {};
         response.key = key;
 
@@ -1008,7 +1009,7 @@ export const generateModel = <T extends object, M extends object>(
 
     // Add "post" hooks to a transaction
     static __hooksTransaction(transaction: Transaction, postHooks: FuncReturningPromise[]): void {
-      const _this = this; // eslint-disable-line @typescript-eslint/no-this-alias
+      const _this = this;
       postHooks = arrify(postHooks);
 
       if (!{}.hasOwnProperty.call(transaction, 'hooks')) {
@@ -1092,12 +1093,12 @@ export const generateModel = <T extends object, M extends object>(
     static list: any; // Is added below from the Query instance
 
     static findAround: any; // Is added below from the Query instance
-  } as Model<T, M> & T;
+  } as unknown as Model<T, M> & T;
 
   const query = new Query<T, M>(model);
   const { initQuery, list, findOne, findAround } = query;
 
-  model.query = initQuery.bind(query); // eslint-disable-line @typescript-eslint/unbound-method
+  model.query = initQuery.bind(query);
   model.list = list.bind(query);
   model.findOne = findOne.bind(query);
   model.findAround = findAround.bind(query);

@@ -1,7 +1,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import is from 'is';
-import Joi from '@hapi/joi';
+import Joi from 'joi';
 import { Transaction as DatastoreTransaction } from '@google-cloud/datastore';
 
 import GstoreEntity, { Entity } from './entity';
@@ -154,7 +154,6 @@ describe('Model', () => {
     test('return an empty object if data is not an object', () => {
       let data = 'hello';
 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       data = GstoreModel.sanitize(data);
 
@@ -201,9 +200,7 @@ describe('Model', () => {
       schema = new Schema(
         {
           foo: { joi: Joi.object({ bar: Joi.any() }).required() },
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-          // @ts-ignore
-          createdOn: { joi: Joi.date().default(() => new Date('01-01-2019'), 'static createdOn') },
+          createdOn: { joi: Joi.date().default(() => new Date('01-01-2019')) },
         },
         { joi: true },
       );
@@ -212,10 +209,12 @@ describe('Model', () => {
       const data = { foo: { unknown: 123 } };
       const entityData = GstoreModel.sanitize(data);
       const { value: validationData, error: validationError } = new GstoreModel(data).validate();
+      const keySymbol = GstoreModel.gstore.ds.KEY;
+      const { [keySymbol]: _entityKey, ...validationWithoutKey } = validationData as any;
 
       assert.isUndefined(entityData.foo.unknown);
       assert.isNull(validationError);
-      assert.deepEqual(entityData, validationData);
+      assert.deepEqual(entityData, validationWithoutKey);
     });
 
     test('should preserve the datastore.KEY', () => {
@@ -410,7 +409,6 @@ describe('Model', () => {
       }));
 
     test('should throw error if transaction not an instance of glcoud Transaction', () =>
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       GstoreModel.get(123, undefined, undefined, {}).catch((err) => {
         expect(err.message).equal('Transaction needs to be a gcloud Transaction');
@@ -769,7 +767,6 @@ describe('Model', () => {
       }));
 
     test('should throw error if transaction passed is not instance of gcloud Transaction', () =>
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       GstoreModel.update(123, {}, undefined, undefined, {}).catch((err) => {
         expect(err.message).equal('Transaction needs to be a gcloud Transaction');
@@ -884,7 +881,6 @@ describe('Model', () => {
     });
 
     test('should throw error if transaction passed is not instance of gcloud Transaction', () =>
-      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore
       GstoreModel.delete(123, undefined, undefined, {}).catch((err) => {
         expect(err.message).equal('Transaction needs to be a gcloud Transaction');

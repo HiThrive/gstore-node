@@ -1,11 +1,8 @@
-/* eslint-disable no-unused-expressions */
-
 import chai from 'chai';
 import sinon from 'sinon';
 import Chance from 'chance';
-import Joi from '@hapi/joi';
-import { Datastore } from '@google-cloud/datastore';
-import { entity } from '@google-cloud/datastore/build/src/entity';
+import Joi from 'joi';
+import { Datastore, Key } from '@google-cloud/datastore';
 
 import { Gstore, Entity, EntityKey } from '../../src';
 import GstoreEntity from '../../src/entity';
@@ -32,13 +29,13 @@ const addKey = (key: EntityKey): void => {
 };
 
 const cleanUp = (cb: any): Promise<any> => {
-  return ((ds.delete(allKeys) as unknown) as Promise<any>)
+  return (ds.delete(allKeys) as unknown as Promise<any>)
     .then(() => {
       cb();
     })
     .catch((err) => {
-      console.log('Error cleaning up'); // eslint-disable-line
-      console.log(err); // eslint-disable-line
+      console.log('Error cleaning up');
+      console.log(err);
     });
 };
 
@@ -139,7 +136,7 @@ describe('Model (Integration Tests)', () => {
         const { entityKey: postKey } = await addPost();
 
         const { entityData } = await PostModel.get(postKey.name as string).populate('unknown');
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
         // @ts-ignore
         expect(entityData.unknown).equal(null);
       });
@@ -151,7 +148,7 @@ describe('Model (Integration Tests)', () => {
         const { entityData } = await PostModel.get(postKey.name as string).populate(['user', 'publication', 'unknown']);
         expect((entityData.user as any).name).equal(userName);
         expect(entityData.publication).equal(null);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
         // @ts-ignore
         expect(entityData.unknown).equal(null);
       });
@@ -193,7 +190,6 @@ describe('Model (Integration Tests)', () => {
         const { entityKey: postKey } = await addPost(userKey);
 
         try {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
           // @ts-ignore
           await PostModel.get(postKey.name).populate(['user', 'publication'], ['email', 'privateVal']);
           throw new Error('Should not get here.');
@@ -233,7 +229,7 @@ describe('Model (Integration Tests)', () => {
         expect((entityData.user as any).company.name).equal(companyName);
         expect((entityData.publication as any).title).equal(publicationTitle);
         expect(entityData.user).deep.equal((entityData.publication as any).user);
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+
         // @ts-ignore
         expect(entityData.path.that.does.not.exist).equal(null);
       });
@@ -275,7 +271,7 @@ describe('Model (Integration Tests)', () => {
       } = await addUser();
 
       const user = await UserModel.findOne({ email });
-      expect(user!.entityKey instanceof entity.Key).to.eq(true);
+      expect(user!.entityKey instanceof Key).to.eq(true);
       expect(user!.entityKey.name).to.eq(entityName);
       expect(user!.privateVal).to.equal(null);
     });
@@ -306,7 +302,7 @@ describe('Model (Integration Tests)', () => {
       await transaction.commit();
       expect((transaction.createQuery as any).called).equal(true);
       expect((transaction.createQuery as any).callCount).equal(1);
-      expect(user!.entityKey instanceof entity.Key).to.eq(true);
+      expect(user!.entityKey instanceof Key).to.eq(true);
       expect(user!.entityKey.name).to.eq(entityName);
       expect(user!.privateVal).to.equal(null);
     });
