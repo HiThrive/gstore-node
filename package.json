@@ -106,8 +106,13 @@
   },
   "peerDependencies": {
     "@google-cloud/datastore": ">=6.0.0 <11"
+  },
+  "overrides": {
+    "google-gax": {
+      "rimraf": "^6.1.4"
+    },
+    "gaxios": {
+      "rimraf": "^6.1.4"
+    }
   }
 }
-
-
-
